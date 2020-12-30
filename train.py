@@ -17,9 +17,9 @@ from azureml.data.dataset_factory import TabularDatasetFactory
 
 from azureml.core import Workspace, Dataset
 
-subscription_id = '30d182b7-c8c4-421c-8fa0-d3037ecfe6d2'
-resource_group = 'aml-quickstarts-119614'
-workspace_name = 'quick-starts-ws-119614'
+subscription_id = '9b72f9e6-56c5-4c16-991b-19c652994860'
+resource_group = 'aml-quickstarts-132558'
+workspace_name = 'quick-starts-ws-132558'
 
 workspace = Workspace(subscription_id, resource_group, workspace_name)
 
