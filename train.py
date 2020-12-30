@@ -14,9 +14,20 @@ from azureml.data.dataset_factory import TabularDatasetFactory
 # Data is located at:
 # "https://automlsamplenotebookdata.blob.core.windows.net/automl-sample-notebook-data/bankmarketing_train.csv"
 
-ds = ### YOUR CODE HERE ###
 
-x, y = clean_data(ds)
+from azureml.core import Workspace, Dataset
+
+subscription_id = '30d182b7-c8c4-421c-8fa0-d3037ecfe6d2'
+resource_group = 'aml-quickstarts-119614'
+workspace_name = 'quick-starts-ws-119614'
+
+workspace = Workspace(subscription_id, resource_group, workspace_name)
+
+dataset = Dataset.get_by_name(workspace, name='Bank-marketing')
+
+ds = dataset
+
+
 
 # TODO: Split data into train and test sets.
 
@@ -49,8 +60,10 @@ def clean_data(data):
     x_df["poutcome"] = x_df.poutcome.apply(lambda s: 1 if s == "success" else 0)
 
     y_df = x_df.pop("y").apply(lambda s: 1 if s == "yes" else 0)
-    
+    return x_df, y_df
 
+
+    
 def main():
     # Add arguments to script
     parser = argparse.ArgumentParser()
@@ -62,11 +75,17 @@ def main():
 
     run.log("Regularization Strength:", np.float(args.C))
     run.log("Max iterations:", np.int(args.max_iter))
+    
+    x, y = clean_data(ds)
+
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size = 0.2, random_state = 2021, shuffle=True)
+    
 
     model = LogisticRegression(C=args.C, max_iter=args.max_iter).fit(x_train, y_train)
 
     accuracy = model.score(x_test, y_test)
     run.log("Accuracy", np.float(accuracy))
+
 
 if __name__ == '__main__':
     main()
